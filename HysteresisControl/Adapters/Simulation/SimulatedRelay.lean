@@ -47,7 +47,7 @@ end SimulatedPreisach
 structure SimulatedExtremum where
   val : Float
   isMax : Bool
-deriving Inhabited
+deriving Inhabited, BEq
 
 /-- Computable simulated memory curve with wiping-out dynamics. -/
 structure SimulatedMemoryCurve where
