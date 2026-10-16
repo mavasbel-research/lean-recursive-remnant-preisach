@@ -21,6 +21,7 @@ lean_lib «Tests» where
   srcDir := "."
   roots := #[
     `tests.unit.TestRelay,
+    `tests.unit.TestTheorems,
     `tests.component.TestPreisach,
     `tests.live.TestMemory,
     `tests.e2e.TestRemnantControl

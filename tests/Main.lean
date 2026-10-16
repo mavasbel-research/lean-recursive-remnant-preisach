@@ -1,4 +1,5 @@
 import tests.unit.TestRelay
+import tests.unit.TestTheorems
 import tests.component.TestPreisach
 import tests.live.TestMemory
 import tests.e2e.TestRemnantControl
@@ -8,6 +9,11 @@ def main : IO UInt32 := do
   IO.println "   Running HysteresisControl Lean 4 Test Verification"
   IO.println "=========================================================="
   
+  let res0 ← Tests.Unit.runTheoremsTest
+  if res0 != 0 then
+    IO.println "Formal Theorems Unit tests FAILED"
+    return res0
+
   let res1 ← Tests.Unit.runUnitTest
   if res1 != 0 then
     IO.println "Unit tests FAILED"
