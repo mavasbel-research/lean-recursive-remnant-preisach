@@ -11,6 +11,21 @@ This repository formalizes the mathematical theorems, operator bounds, and algor
 
 ---
 
+## Audit status (2026-10-26) — read this first
+
+A comparison with the paper (IEEE L-CSS 2021) found that only the Proposition 4 results
+state what the paper proves. Evidence and Lean reproductions: `/home/mavasbel/Dev/docs/reference/2026-10-26-02-21-lean4-native-lesson-09-critical-reading.md` (§5, §7).
+
+| Statement | Repository (`HysteresisControl/Domain/Model/Theorems.lean`) | Finding |
+|---|---|---|
+| Prop. 1 | `prop1_remnant_difference_nonneg` | takes `Monotone Phi` as a hypothesis; the paper derives it from the Preisach integral |
+| Prop. 2 | `prop2_remnant_difference_bounds` | the hypothesis `h_bounds` is the conclusion; the proof is `h_bounds` |
+| Prop. 3 | `prop3_remnant_difference_strictly_positive` | the lower bound the paper derives from μ is a hypothesis |
+| Lemma 1 | `lemma1_remnant_maximum_at_saturation` | hypothesis `∀ u, u ≤ u_sat` is unsatisfiable on ℝ; the lemma can never be applied |
+| Prop. 4 | `prop4_contraction_factor_lt_one`, `prop4_geometric_error_decay`, `prop4_asymptotic_convergence` | faithful: ρ < 1, geometric decay, convergence |
+
+The test runner no longer prints "(100% Verification Coverage)": nothing measured it.
+
 ## Architectural Design
 
 The codebase strictly follows a **Hexagonal Architecture (Ports and Adapters)** adhering to SOLID principles:
@@ -102,7 +117,7 @@ The codebase strictly follows a **Hexagonal Architecture (Ports and Adapters)** 
 │   │   └── TestCli.lean             # End-to-end command-line integration tests
 │   └── Main.lean                    # Test suite aggregator
 ├── lakefile.lean                    # Lake package configuration
-└── lean-toolchain                   # Pinned Lean toolchain (v4.16.0)
+└── lean-toolchain                   # Pinned Lean toolchain (leanprover/lean4:v4.35.0)
 ```
 
 ---
@@ -130,7 +145,7 @@ Given the Preisach output remnant function $\Phi(u)$ with slope bounds $0 < \Gam
 ## Verification & Build Instructions
 
 ### Prerequisites
-- [Lean 4](https://lean-lang.org/) (pinned via `lean-toolchain` to `v4.16.0`).
+- [Lean 4](https://lean-lang.org/) (pinned via `lean-toolchain` to `leanprover/lean4:v4.35.0`; Mathlib `v4.35.0`).
 - [Lake](https://github.com/leanprover/lean4/tree/master/src/lake) (build system included with Lean 4).
 
 ### Building the Project

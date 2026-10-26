@@ -35,6 +35,6 @@ def main : IO UInt32 := do
     return res4
 
   IO.println "=========================================================="
-  IO.println "   ALL TESTS PASSED (100% Verification Coverage)"
+  IO.println "   ALL TESTS PASSED"
   IO.println "=========================================================="
   return 0
