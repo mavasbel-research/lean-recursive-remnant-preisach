@@ -14,7 +14,7 @@ This repository formalizes the mathematical theorems, operator bounds, and algor
 ## Audit status (2026-10-26) — read this first
 
 A comparison with the paper (IEEE L-CSS 2021) found that only the Proposition 4 results
-state what the paper proves. Evidence and Lean reproductions: `/home/mavasbel/Dev/docs/reference/2026-10-26-02-21-lean4-native-lesson-09-critical-reading.md` (§5, §7).
+state what the paper proves. Reproductions and theorem verification are detailed below:
 
 | Statement | Repository (`HysteresisControl/Domain/Model/Theorems.lean`) | Finding |
 |---|---|---|
