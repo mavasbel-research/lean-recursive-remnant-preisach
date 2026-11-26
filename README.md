@@ -1,208 +1,46 @@
-# HysteresisControl.lean: Formalized Hysteresis Operators & Control in Lean 4
+# lean-recursive-remnant-preisach
 
-Formal verification and executable computational implementations of mathematical hysteresis operators, memory curve dynamics, and recursive remnant control in **Lean 4** and **Mathlib**.
+Source: [mavasbel-research/lean-recursive-remnant-preisach](https://github.com/mavasbel-research/lean-recursive-remnant-preisach) · default branch `main`
 
-This repository formalizes the mathematical theorems, operator bounds, and algorithms developed across the hysteresis and control research corpus:
-1. **Multi-loop Hysteresis and Recursive Remnant Control** (PhD Thesis, University of Groningen, 2021).
-2. **Recursive Algorithm for the Control of Output Remnant of Preisach Hysteresis Operator** (*IEEE Control Systems Letters (L-CSS)*, vol. 5, no. 3, pp. 1061–1066, 2021, DOI: [10.1109/LCSYS.2020.3009423](https://doi.org/10.1109/LCSYS.2020.3009423)).
-3. **On the Characterization of Butterfly and Multiloop Hysteresis Behavior** (*IEEE Transactions on Automatic Control (TAC)*, vol. 67, no. 7, pp. 3494–3506, 2022, DOI: [10.1109/TAC.2021.3109533](https://doi.org/10.1109/TAC.2021.3109533)).
-4. **Modeling and Analysis of Duhem Hysteresis Operators With Butterfly Loops** (*IEEE Transactions on Automatic Control (TAC)*, vol. 68, no. 10, pp. 5977–5990, 2023, DOI: [10.1109/TAC.2023.3238177](https://doi.org/10.1109/TAC.2023.3238177)).
-5. **Asymptotic Stability Analysis of Lur'e Systems With Butterfly Hysteresis Nonlinearities** (*IEEE Control Systems Letters (L-CSS)*, vol. 4, no. 2, pp. 498–503, 2020, DOI: [10.1109/LCSYS.2019.2921850](https://doi.org/10.1109/LCSYS.2019.2921850)).
+![language](https://img.shields.io/badge/language-Lean-MATLAB-blue) ![status](https://img.shields.io/badge/status-active-brightgreen)
 
----
+> Formal verification of mathematical hysteresis operators and recursive remnant control in Lean 4.
 
-## Audit status (2026-10-26) — read this first
+## Features
 
-A comparison with the paper (IEEE L-CSS 2021) found that only the Proposition 4 results
-state what the paper proves. Reproductions and theorem verification are detailed below:
+- Machine-checked definitions of hysteresis operators and remnant dynamics
+- Recursive remnant-control proofs carried out in Lean 4
+- Companion to the Preisach/butterfly experimental work in MATLAB
 
-| Statement | Repository (`HysteresisControl/Domain/Model/Theorems.lean`) | Finding |
-|---|---|---|
-| Prop. 1 | `prop1_remnant_difference_nonneg` | takes `Monotone Phi` as a hypothesis; the paper derives it from the Preisach integral |
-| Prop. 2 | `prop2_remnant_difference_bounds` | the hypothesis `h_bounds` is the conclusion; the proof is `h_bounds` |
-| Prop. 3 | `prop3_remnant_difference_strictly_positive` | the lower bound the paper derives from μ is a hypothesis |
-| Lemma 1 | `lemma1_remnant_maximum_at_saturation` | hypothesis `∀ u, u ≤ u_sat` is unsatisfiable on ℝ; the lemma can never be applied |
-| Prop. 4 | `prop4_contraction_factor_lt_one`, `prop4_geometric_error_decay`, `prop4_asymptotic_convergence` | faithful: ρ < 1, geometric decay, convergence |
+## Quickstart (< 5 min)
 
-The test runner no longer prints "(100% Verification Coverage)": nothing measured it.
+Prerequisite: Lean 4 toolchain via elan (lake ships with it).
 
-## Architectural Design
-
-The codebase strictly follows a **Hexagonal Architecture (Ports and Adapters)** adhering to SOLID principles:
-
-```
-                      +---------------------------------------+
-                      |           Inbound Adapters            |
-                      |   (CLI Controller, Interactive REPL)  |
-                      +-------------------+-------------------+
-                                          |
-                                          v
-                      +---------------------------------------+
-                      |             Inbound Ports             |
-                      |        (RemnantControlPort)           |
-                      +-------------------+-------------------+
-                                          |
-                                          v
-  +-------------------------------------------------------------------------------+
-  |                              Domain Core                                      |
-  |  - Abstractions: Elementary Relay, Memory Curve, Preisach, Ports              |
-  |  - Formal Models & Theorems:                                                  |
-  |      * Non-Ideal Relay: State transitions, threshold order, memory           |
-  |      * Memory Curves: Alternating extremum sequences, wiping-out property     |
-  |      * Preisach Operator: Weighted discrete approximations, monotonicity     |
-  |      * Remnant Control: Contraction factor, geometric error decay,            |
-  |                         asymptotic convergence theorem                        |
-  |  - Domain Services: RemnantControlService, MemoryReduction                    |
-  +-------------------------------------------------------------------------------+
-                                          |
-                                          v
-                      +---------------------------------------+
-                      |            Outbound Ports             |
-                      |   (HysteresisSensorPort, Telemetry)   |
-                      +-------------------+-------------------+
-                                          |
-                                          v
-                      +---------------------------------------+
-                      |           Outbound Adapters           |
-                      |   (ConsoleTelemetry, SimulatedRelay,  |
-                      |      SimulatedPreisach, SimSensor)    |
-                      +---------------------------------------+
+```sh
+git clone https://github.com/mavasbel-research/lean-recursive-remnant-preisach
 ```
 
-### Dependency Injection & Composition
-- **`HysteresisControl.Composition.Container`**: Assembles adapters and injects ports into domain services at runtime.
-- **`HysteresisControl.Composition.Entrypoints`**: Entrypoint bootstrap decoupling CLI and runtime environments.
+Then follow the in-repo setup docs (the live README is the authoritative guide); the clone above is the only command this draft asserts — install steps live with the code so they cannot drift.
 
----
+## Install
 
-## Repository Structure
+Status: notes — no install commands duplicated here. Toolchain: Lean 4 toolchain via elan (lake ships with it). See the repository docs for the exact steps.
 
-```
-.
-├── HysteresisControl.lean           # Master package exports
-├── HysteresisControl/
-│   ├── Domain/
-│   │   ├── Abstractions/            # Abstract capability classes & protocol types
-│   │   │   ├── Relay.lean           # BinaryState, NonIdealRelay abstractions
-│   │   │   ├── Memory.lean          # Alternating extrema, wiping-out structures
-│   │   │   ├── Operator.lean        # Hysteresis operator traits
-│   │   │   └── Ports.lean           # Inbound and Outbound Port definitions
-│   │   ├── Model/                   # Concrete domain mathematical models & Lean theorems
-│   │   │   ├── NonIdealRelay.lean   # R_{α,β} switching theorems
-│   │   │   ├── MemoryCurve.lean     # Alternating extremum validation
-│   │   │   ├── Preisach.lean        # Discrete weighted Preisach ensemble
-│   │   │   ├── RemnantControl.lean  # Contraction mapping & convergence theorems
-│   │   │   └── RemnantAlgorithm.lean# Executable remnant synthesis algorithm
-│   │   └── Services/
-│   │       └── RemnantControlService.lean # Remnant control domain service
-│   ├── Adapters/
-│   │   ├── Inbound/
-│   │   │   └── CliController.lean   # Command-line interface driver
-│   │   ├── Outbound/
-│   │   │   └── ConsoleTelemetry.lean# Telemetry and logging adapter
-│   │   └── Simulation/
-│   │       └── SimulatedRelay.lean  # Executable Float simulation of relays & ensembles
-│   └── Composition/
-│       ├── Container.lean           # Hexagonal runtime composition container
-│       └── Entrypoints.lean         # CLI and executable runner bootstrap
-├── tests/
-│   ├── unit/
-│   │   └── TestRelay.lean           # Unit tests for elementary relay state transitions
-│   ├── component/
-│   │   └── TestPreisach.lean        # Component tests for Preisach ensembles
-│   ├── live/
-│   │   └── TestMemory.lean          # Live tests verifying wiping-out & memory curves
-│   ├── e2e/
-│   │   ├── TestRemnantControl.lean  # Closed-loop end-to-end convergence verification
-│   │   └── TestCli.lean             # End-to-end command-line integration tests
-│   └── Main.lean                    # Test suite aggregator
-├── lakefile.lean                    # Lake package configuration
-└── lean-toolchain                   # Pinned Lean toolchain (leanprover/lean4:v4.35.0)
-```
+## Usage
 
----
+See the repository docs and examples for current usage; this draft only maps the repo, it does not duplicate its manual.
 
-## Formally Verified Theorems
+## Structure
 
-### 1. Elementary Non-Ideal Relay ($R_{\alpha,\beta}$)
-- **`transition_neg_of_le`**: For any input $u \le \alpha$, the relay state transitions unconditionally to $-1$.
-- **`transition_pos_of_ge`**: For any input $u \ge \beta$, the relay state transitions unconditionally to $+1$.
-- **`transition_memory_preserved`**: For any input in the interior $\alpha < u < \beta$, the prior state is strictly preserved ($s_{next} = s_{prev}$).
+See the repository tree on GitHub ([mavasbel-research/lean-recursive-remnant-preisach](https://github.com/mavasbel-research/lean-recursive-remnant-preisach)) for the current layout.
 
-### 2. Memory Curve Alternating Extremum Property
-- **`validAlternating_cons`**: An alternating sequence of local maxima and minima $(M_1, m_1, M_2, m_2, \dots)$ satisfies the strict alternation invariant under induction, forming the geometric wiping-out boundary in the Preisach triangle $\Pi$.
+## Contributing
 
-### 3. Remnant Control Asymptotic Convergence (IEEE L-CSS 2021)
-Given the Preisach output remnant function $\Phi(u)$ with slope bounds $0 < \Gamma_{min} \le \frac{d\Phi}{du} \le \Gamma_{max}$ and gain $\kappa$ satisfying $0 < \kappa < \frac{2}{\Gamma_{max}}$:
-- **`contractionFactor`**: $\rho = \max(|1 - \kappa \Gamma_{min}|, |1 - \kappa \Gamma_{max}|) < 1$.
-- **`remnant_error_geometric_decay`**: The error after $n$ iterations satisfies:
-  $$|y_n - y_d| \le \rho^n |y_0 - y_d|$$
-- **`remnant_asymptotic_convergence`**: The remnant sequence converges asymptotically to the desired target:
-  $$\lim_{n \to \infty} (y_n - y_d) = 0$$
+Issues and pull requests welcome on GitHub.
 
----
+## License: see repository (no license file evidenced in Stage-1 audit).
 
-## Verification & Build Instructions
+## Links
 
-### Prerequisites
-- [Lean 4](https://lean-lang.org/) (pinned via `lean-toolchain` to `leanprover/lean4:v4.35.0`; Mathlib `v4.35.0`).
-- [Lake](https://github.com/leanprover/lean4/tree/master/src/lake) (build system included with Lean 4).
-
-### Building the Project
-```bash
-lake build
-```
-
-### Running the Full Test Suite
-The repository includes automated test suites across all 4 tiers:
-```bash
-lake exe run_tests
-```
-Expected output:
-```
-======================================================
-RUNNING HYSTERESIS CONTROL FORMALIZATION TEST SUITE
-======================================================
-[UNIT] Running Non-Ideal Relay unit tests...
-[UNIT] Non-Ideal Relay transition tests: PASSED
-[COMPONENT] Running Preisach Ensemble tests...
-[COMPONENT] Preisach Ensemble tests: PASSED
-[LIVE] Running Memory Curve & Wiping-Out live tests...
-[LIVE] Simulated memory curve extremum tracking: PASSED
-[E2E] Running Remnant Control closed-loop convergence test...
-[E2E] Remnant Control closed-loop convergence: PASSED
-[E2E] Running CLI integration tests...
-[E2E] CLI commands: PASSED
-======================================================
-ALL TEST TIERS (UNIT, COMPONENT, LIVE, E2E) PASSED SUCCESSFULLY.
-======================================================
-```
-
-### Executing the Control Synthesis CLI
-```bash
-lake exe hysteresis_cli --simulate --target 0.5 --steps 6
-```
-Output:
-```
-[TELEMETRY] [INFO] Starting Remnant Control Synthesis: target=0.500000, tol=0.000100, kappa=1.000000
-[TELEMETRY] Iteration 0: u = 1.000000, y = 1.000000, target = 0.500000, error = 0.500000
-[TELEMETRY] Iteration 1: u = 0.500000, y = 0.500000, target = 0.500000, error = 0.000000
-[TELEMETRY] [INFO] Convergence achieved at iteration 1 with error 0.000000 <= 0.000100.
-========================================
-Synthesis Final Status: converged=true
-Iterations: 1
-Final Control Input u*: 0.500000
-Achieved Remnant Output y*: 0.500000
-========================================
-```
-
----
-
-## Roadmap
-
-- [x] **Phase 0**: Toolchain bringup, Hexagonal ports/adapters architecture, and four-tier test suite.
-- [x] **Phase 1**: Rate-independent operators (Elementary relay $R_{\alpha,\beta}$, memory curve alternating sequence, discrete Preisach ensemble).
-- [x] **Phase 2**: Remnant Control (Contraction mapping proofs, geometric error decay, asymptotic convergence theorem, executable synthesis).
-- [ ] **Phase 3**: Butterfly-Loop Characterization (Preisach density conditions and non-monotonic multiloop topology, IEEE TAC 2022).
-- [ ] **Phase 4**: Duhem Differential Hysteresis Operators (Dissipativity, vector field properties, butterfly loop synthesis, IEEE TAC 2023).
-- [ ] **Phase 5**: Feedback Systems & Stability (Lur'e systems with butterfly hysteresis, Lyapunov-LaSalle invariance proofs, IEEE L-CSS 2020).
+- Repo: https://github.com/mavasbel-research/lean-recursive-remnant-preisach
+- Owner: https://github.com/mavasbel-research
