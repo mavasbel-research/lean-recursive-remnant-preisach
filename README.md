@@ -2,9 +2,9 @@
 
 Source: [mavasbel-research/lean-recursive-remnant-preisach](https://github.com/mavasbel-research/lean-recursive-remnant-preisach) · default branch `main`
 
-![language](https://img.shields.io/badge/language-Lean-MATLAB-blue) ![status](https://img.shields.io/badge/status-active-brightgreen)
+![status](https://img.shields.io/badge/status-active-brightgreen)
 
-> Formal verification of mathematical hysteresis operators and recursive remnant control in Lean 4.
+> WIP for formal verification of mathematical hysteresis operators and recursive remnant control in Lean 4.
 
 ## Features
 
